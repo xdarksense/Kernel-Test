@@ -16,8 +16,8 @@ DTBIMAGE="boot.img-dtb"
 DEFCONFIG="ak_bacon_defconfig"
 
 # Kernel Details
-BASE_AK_VER="ak"
-VER=".040_b21.opo.cm11"
+BASE_AK_VER="AK"
+VER=".050.GOLD.OPO.CM11"
 AK_VER="$BASE_AK_VER$VER"
 
 # Vars
