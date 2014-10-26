@@ -11,8 +11,7 @@ clear
 # Resources
 THREAD="-j$(grep -c ^processor /proc/cpuinfo)"
 KERNEL="zImage"
-DTB="zImage-dtb"
-DTBIMAGE="boot.img-dtb"
+DTBIMAGE="dtb"
 DEFCONFIG="ak_bacon_defconfig"
 
 # Kernel Details
@@ -30,9 +29,9 @@ export KBUILD_BUILD_HOST=kernel
 
 # Paths
 KERNEL_DIR=`pwd`
-REPACK_DIR="${HOME}/android/AK-OnePone-AnyKernel"
-PATCH_DIR="${HOME}/android/AK-OnePone-AnyKernel/patch"
-MODULES_DIR="${HOME}/android/AK-OnePone-AnyKernel/patch/modules"
+REPACK_DIR="${HOME}/android/AK-OnePone-AnyKernel2"
+PATCH_DIR="${HOME}/android/AK-OnePone-AnyKernel2/patch"
+MODULES_DIR="${HOME}/android/AK-OnePone-AnyKernel2/modules"
 ZIP_MOVE="${HOME}/android/AK-releases"
 ZIMAGE_DIR="${HOME}/android/AK-OnePone/arch/arm/boot"
 
@@ -40,7 +39,7 @@ ZIMAGE_DIR="${HOME}/android/AK-OnePone/arch/arm/boot"
 function clean_all {
 		rm -rf $MODULES_DIR/*
 		rm -rf $REPACK_DIR/$KERNEL
-		rm -rf $PATCH_DIR/$DTBIMAGE
+		rm -rf $REPACK_DIR/$DTBIMAGE
 		make clean && make mrproper
 }
 
@@ -56,7 +55,7 @@ function make_modules {
 }
 
 function make_dtb {
-		$REPACK_DIR/tools/dtbToolCM -2 -o $PATCH_DIR/$DTBIMAGE -s 2048 -p scripts/dtc/ arch/arm/boot/
+		$REPACK_DIR/tools/dtbToolCM -2 -o $REPACK_DIR/$DTBIMAGE -s 2048 -p scripts/dtc/ arch/arm/boot/
 }
 
 function make_zip {
