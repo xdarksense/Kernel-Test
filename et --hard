@@ -1,0 +1,128 @@
+[1mdiff --git a/arch/powerpc/kernel/cacheinfo.c b/arch/powerpc/kernel/cacheinfo.c[m
+[1mindex f27da39..51c3e47 100644[m
+[1m--- a/arch/powerpc/kernel/cacheinfo.c[m
+[1m+++ b/arch/powerpc/kernel/cacheinfo.c[m
+[36m@@ -140,7 +140,7 @@[m [mstatic void cache_init(struct cache *cache, int type, int level, struct device_n[m
+ 	list_add(&cache->list, &cache_list);[m
+ }[m
+ [m
+[31m-static struct cache *__cpuinit new_cache(int type, int level, struct device_node *ofnode)[m
+[32m+[m[32mstatic struct cache * new_cache(int type, int level, struct device_node *ofnode)[m
+ {[m
+ 	struct cache *cache;[m
+ [m
+[36m@@ -324,7 +324,7 @@[m [mstatic bool cache_node_is_unified(const struct device_node *np)[m
+ 	return of_get_property(np, "cache-unified", NULL);[m
+ }[m
+ [m
+[31m-static struct cache *__cpuinit cache_do_one_devnode_unified(struct device_node *node, int level)[m
+[32m+[m[32mstatic struct cache * cache_do_one_devnode_unified(struct device_node *node, int level)[m
+ {[m
+ 	struct cache *cache;[m
+ [m
+[36m@@ -335,7 +335,7 @@[m [mstatic struct cache *__cpuinit cache_do_one_devnode_unified(struct device_node *[m
+ 	return cache;[m
+ }[m
+ [m
+[31m-static struct cache *__cpuinit cache_do_one_devnode_split(struct device_node *node, int level)[m
+[32m+[m[32mstatic struct cache * cache_do_one_devnode_split(struct device_node *node, int level)[m
+ {[m
+ 	struct cache *dcache, *icache;[m
+ [m
+[36m@@ -357,7 +357,7 @@[m [merr:[m
+ 	return NULL;[m
+ }[m
+ [m
+[31m-static struct cache *__cpuinit cache_do_one_devnode(struct device_node *node, int level)[m
+[32m+[m[32mstatic struct cache * cache_do_one_devnode(struct device_node *node, int level)[m
+ {[m
+ 	struct cache *cache;[m
+ [m
+[36m@@ -369,7 +369,7 @@[m [mstatic struct cache *__cpuinit cache_do_one_devnode(struct device_node *node, in[m
+ 	return cache;[m
+ }[m
+ [m
+[31m-static struct cache *__cpuinit cache_lookup_or_instantiate(struct device_node *node, int level)[m
+[32m+[m[32mstatic struct cache * cache_lookup_or_instantiate(struct device_node *node, int level)[m
+ {[m
+ 	struct cache *cache;[m
+ [m
+[36m@@ -423,7 +423,7 @@[m [mstatic void do_subsidiary_caches(struct cache *cache)[m
+ 	}[m
+ }[m
+ [m
+[31m-static struct cache *__cpuinit cache_chain_instantiate(unsigned int cpu_id)[m
+[32m+[m[32mstatic struct cache * cache_chain_instantiate(unsigned int cpu_id)[m
+ {[m
+ 	struct device_node *cpu_node;[m
+ 	struct cache *cpu_cache = NULL;[m
+[36m@@ -448,7 +448,7 @@[m [mout:[m
+ 	return cpu_cache;[m
+ }[m
+ [m
+[31m-static struct cache_dir *__cpuinit cacheinfo_create_cache_dir(unsigned int cpu_id)[m
+[32m+[m[32mstatic struct cache_dir * cacheinfo_create_cache_dir(unsigned int cpu_id)[m
+ {[m
+ 	struct cache_dir *cache_dir;[m
+ 	struct device *dev;[m
+[1mdiff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c[m
+[1mindex b226fdc..323149d 100644[m
+[1m--- a/arch/x86/kernel/cpu/common.c[m
+[1m+++ b/arch/x86/kernel/cpu/common.c[m
+[36m@@ -332,7 +332,7 @@[m [mstatic void filter_cpuid_features(struct cpuinfo_x86 *c, bool warn)[m
+  */[m
+ [m
+ /* Look up CPU names by table lookup. */[m
+[31m-static const char *__cpuinit table_lookup_model(struct cpuinfo_x86 *c)[m
+[32m+[m[32mstatic const char * table_lookup_model(struct cpuinfo_x86 *c)[m
+ {[m
+ 	const struct cpu_model_info *info;[m
+ [m
+[36m@@ -382,7 +382,7 @@[m [mvoid switch_to_new_gdt(int cpu)[m
+ 	load_percpu_segment(cpu);[m
+ }[m
+ [m
+[31m-static const struct cpu_dev *__cpuinitdata cpu_devs[X86_VENDOR_NUM] = {};[m
+[32m+[m[32mstatic const struct cpu_dev *data cpu_devs[X86_VENDOR_NUM] = {};[m
+ [m
+ static void get_model_name(struct cpuinfo_x86 *c)[m
+ {[m
+[1mdiff --git a/arch/x86/kernel/cpu/mcheck/mce.c b/arch/x86/kernel/cpu/mcheck/mce.c[m
+[1mindex 29d11f9..7cd7b95 100644[m
+[1m--- a/arch/x86/kernel/cpu/mcheck/mce.c[m
+[1m+++ b/arch/x86/kernel/cpu/mcheck/mce.c[m
+[36m@@ -1958,7 +1958,7 @@[m [mstatic struct bus_type mce_subsys = {[m
+ [m
+ DEFINE_PER_CPU(struct device *, mce_device);[m
+ [m
+[31m-__cpuinitdata[m
+[32m+[m[32mdata[m
+ void (*threshold_cpu_callback)(unsigned long action, unsigned int cpu);[m
+ [m
+ static inline struct mce_bank *attr_to_bank(struct device_attribute *attr)[m
+[1mdiff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c[m
+[1mindex dc0b727..cfbef8a 100644[m
+[1m--- a/arch/x86/mm/mmio-mod.c[m
+[1m+++ b/arch/x86/mm/mmio-mod.c[m
+[36m@@ -410,7 +410,7 @@[m [mout:[m
+ 		pr_warning("multiple CPUs still online, may miss events.\n");[m
+ }[m
+ [m
+[31m-/* __ref because leave_uniprocessor calls cpu_up which is __cpuinit,[m
+[32m+[m[32m/* __ref because leave_uniprocessor calls cpu_up which is,[m
+    but this whole function is ifdefed CONFIG_HOTPLUG_CPU */[m
+ static void __ref leave_uniprocessor(void)[m
+ {[m
+[1mdiff --git a/arch/x86/platform/mrst/mrst.c b/arch/x86/platform/mrst/mrst.c[m
+[1mindex 0ca032a..56878df 100644[m
+[1m--- a/arch/x86/platform/mrst/mrst.c[m
+[1m+++ b/arch/x86/platform/mrst/mrst.c[m
+[36m@@ -65,7 +65,7 @@[m
+  * lapic (always-on,ARAT) ------ 150[m
+  */[m
+ [m
+[31m-__cpuinitdata enum mrst_timer_options mrst_timer_options;[m
+[32m+[m[32mdata enum mrst_timer_options mrst_timer_options;[m
+ [m
+ static u32 sfi_mtimer_usage[SFI_MTMR_MAX_NUM];[m
+ static struct sfi_timer_table_entry sfi_mtimer_array[SFI_MTMR_MAX_NUM];[m
