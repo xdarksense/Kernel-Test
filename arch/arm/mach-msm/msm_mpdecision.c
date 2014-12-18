@@ -43,7 +43,9 @@
 #include <linux/input.h>
 #include <linux/slab.h>
 #endif
+#ifndef CONFIG_MACH_OPPO_MSM8974
 #include "acpuclock.h"
+#endif
 
 #define DEBUG 0
 
@@ -102,7 +104,10 @@ static unsigned int NwNs_Threshold[8] = {12, 0, 20, 7, 25, 10, 0, 18};
 static unsigned int TwTs_Threshold[8] = {140, 0, 140, 190, 140, 190, 0, 190};
 
 extern unsigned int get_rq_info(void);
+
+#ifndef CONFIG_MACH_OPPO_MSM8974
 extern unsigned long acpuclk_get_rate(int);
+#endif
 
 unsigned int state = MSM_MPDEC_IDLE;
 bool was_paused = false;
@@ -115,7 +120,11 @@ static void unboost_cpu(int cpu);
 static cputime64_t mpdec_paused_until = 0;
 
 static unsigned long get_rate(int cpu) {
+#ifdef CONFIG_MACH_OPPO_MSM8974
+	return cpufreq_quick_get(cpu);
+#else
 	return acpuclk_get_rate(cpu);
+#endif
 }
 
 static int get_slowest_cpu(void) {
