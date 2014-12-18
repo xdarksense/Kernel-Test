@@ -121,7 +121,7 @@ static cputime64_t mpdec_paused_until = 0;
 
 static unsigned long get_rate(int cpu) {
 #ifdef CONFIG_MACH_OPPO_MSM8974
-	return cpufreq_quick_get(cpu);
+	return cpufreq_get(cpu);
 #else
 	return acpuclk_get_rate(cpu);
 #endif
