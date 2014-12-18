@@ -246,8 +246,8 @@ static int mp_decision(void) {
 
 	last_time = ktime_to_ms(ktime_get());
 #if DEBUG
-	pr_info(MPDEC_TAG"[DEBUG] rq: %u, new_state: %i | Mask=[%d%d%d%d]\n",
-			rq_depth, new_state, cpu_online(0), cpu_online(1), cpu_online(2), cpu_online(3));
+	pr_info(MPDEC_TAG"[DEBUG] rq: %u, new_state: %i | Mask=[%d%d%d%d] | CPU0 rate: %lu\n",
+			rq_depth, new_state, cpu_online(0), cpu_online(1), cpu_online(2), cpu_online(3), get_rate(0));
 #endif
 	return new_state;
 }
