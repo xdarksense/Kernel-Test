@@ -37,7 +37,7 @@ struct _cache_table {
 /* All the cache descriptor types we care about (no TLB or
    trace cache entries) */
 
-static const struct _cache_table __cpuinitconst cache_table[] =
+static const struct _cache_table cache_table[] =
 {
 	{ 0x06, LVL_1_INST, 8 },	/* 4-way set assoc, 32 byte line size */
 	{ 0x08, LVL_1_INST, 16 },	/* 4-way set assoc, 32 byte line size */
@@ -203,7 +203,7 @@ union l3_cache {
 	unsigned val;
 };
 
-static const unsigned short __cpuinitconst assocs[] = {
+static const unsigned short assocs[] = {
 	[1] = 1,
 	[2] = 2,
 	[4] = 4,
@@ -217,10 +217,10 @@ static const unsigned short __cpuinitconst assocs[] = {
 	[0xf] = 0xffff /* fully associative - no way to show this currently */
 };
 
-static const unsigned char __cpuinitconst levels[] = { 1, 1, 2, 3 };
-static const unsigned char __cpuinitconst types[] = { 1, 2, 3, 3 };
+static const unsigned char levels[] = { 1, 1, 2, 3 };
+static const unsigned char types[] = { 1, 2, 3, 3 };
 
-static void __cpuinit
+static void
 amd_cpuid4(int leaf, union _cpuid4_leaf_eax *eax,
 		     union _cpuid4_leaf_ebx *ebx,
 		     union _cpuid4_leaf_ecx *ecx)
@@ -529,7 +529,7 @@ static struct _cache_attr subcaches =
 #endif /* CONFIG_AMD_NB */
 
 static int
-__cpuinit cpuid4_cache_lookup_regs(int index,
+cpuid4_cache_lookup_regs(int index,
 				   struct _cpuid4_info_regs *this_leaf)
 {
 	union _cpuid4_leaf_eax	eax;
@@ -1188,7 +1188,7 @@ static int __cpuinit cacheinfo_cpu_callback(struct notifier_block *nfb,
 	return NOTIFY_OK;
 }
 
-static struct notifier_block __cpuinitdata cacheinfo_cpu_notifier = {
+static struct notifier_block cacheinfo_cpu_notifier = {
 	.notifier_call = cacheinfo_cpu_callback,
 };
 

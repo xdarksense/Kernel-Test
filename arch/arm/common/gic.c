@@ -903,7 +903,7 @@ static int __cpuinit gic_secondary_init(struct notifier_block *nfb,
  * Notifier for enabling the GIC CPU interface. Set an arbitrarily high
  * priority because the GIC needs to be up before the ARM generic timers.
  */
-static struct notifier_block __cpuinitdata gic_cpu_notifier = {
+static struct notifier_block gic_cpu_notifier = {
 	.notifier_call = gic_secondary_init,
 	.priority = 100,
 };
