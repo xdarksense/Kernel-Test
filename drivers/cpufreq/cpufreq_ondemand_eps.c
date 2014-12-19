@@ -35,13 +35,13 @@
 #define DEF_SAMPLING_DOWN_FACTOR		(1)
 #define MAX_SAMPLING_DOWN_FACTOR		(100000)
 #define MICRO_FREQUENCY_UP_THRESHOLD		(95)
-#define MICRO_FREQUENCY_MIN_SAMPLE_RATE		(10000)
+#define MICRO_FREQUENCY_MIN_SAMPLE_RATE		(20000)
 #define MIN_FREQUENCY_UP_THRESHOLD		(11)
 #define MAX_FREQUENCY_UP_THRESHOLD		(100)
 #define DEF_DOWN_THRESHOLD			(5)
-#define TOUCH_LOAD				(65)
-#define TOUCH_LOAD_THRESHOLD			(10)
-#define TOUCH_LOAD_DURATION			(1100)
+#define TOUCH_LOAD				(50)
+#define TOUCH_LOAD_THRESHOLD			(20)
+#define TOUCH_LOAD_DURATION			(1200)
 
 /*
  * The polling frequency of this governor depends on the capability of
