@@ -571,9 +571,6 @@ static void msm_mpdec_suspend(struct work_struct * msm_mpdec_suspend_work) {
 		return;
 	}
 
-	/* main work thread can sleep now */
-	cancel_delayed_work_sync(&msm_mpdec_work);
-
 	for_each_possible_cpu(cpu) {
 #ifdef CONFIG_MSM_MPDEC_INPUTBOOST_CPUMIN
 		unboost_cpu(cpu);
@@ -583,6 +580,9 @@ static void msm_mpdec_suspend(struct work_struct * msm_mpdec_suspend_work) {
 		}
 	}
 	mpdec_suspended = true;
+
+        /* main work thread can sleep now */
+        cancel_delayed_work_sync(&msm_mpdec_work);
 
 	pr_info(MPDEC_TAG"Screen -> off. Deactivated mpdecision.\n");
 }
