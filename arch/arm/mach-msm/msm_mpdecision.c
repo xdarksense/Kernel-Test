@@ -584,7 +584,8 @@ static void msm_mpdec_suspend(struct work_struct * msm_mpdec_suspend_work) {
 	}
 	mpdec_suspended = true;
 
-	pr_info(MPDEC_TAG"Screen -> off. Deactivated mpdecision.\n");
+	pr_info(MPDEC_TAG"Screen -> off. Deactivated mpdecision. | Mask=[%d%d%d%d]\n",
+				cpu_online(0), cpu_online(1), cpu_online(2), cpu_online(3));
 }
 static DECLARE_WORK(msm_mpdec_suspend_work, msm_mpdec_suspend);
 
