@@ -24,6 +24,7 @@
 #include <asm-generic/cputime.h>
 #include <linux/mutex.h>
 
+#define HOTPLUG_ENABLED				1
 #define MPDEC_TAG				"[MPDEC]: "
 #define MSM_MPDEC_STARTDELAY			20000
 #define MSM_MPDEC_DELAY				130

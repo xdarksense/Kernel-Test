@@ -75,6 +75,7 @@ static struct msm_mpdec_tuners {
 	unsigned long int idle_freq;
 	unsigned int max_cpus;
 	unsigned int min_cpus;
+	unsigned int enabled;
 #ifdef CONFIG_MSM_MPDEC_INPUTBOOST_CPUMIN
 	bool boost_enabled;
 	unsigned int boost_time;
@@ -88,6 +89,7 @@ static struct msm_mpdec_tuners {
 	.idle_freq = MSM_MPDEC_IDLE_FREQ,
 	.max_cpus = CONFIG_NR_CPUS,
 	.min_cpus = 1,
+	.enabled = HOTPLUG_ENABLED,
 #ifdef CONFIG_MSM_MPDEC_INPUTBOOST_CPUMIN
 	.boost_enabled = true,
 	.boost_time = MSM_MPDEC_BOOSTTIME,
@@ -210,7 +212,7 @@ static int mp_decision(void) {
 	cputime64_t current_time;
 	cputime64_t this_time = 0;
 
-	if (state == MSM_MPDEC_DISABLED)
+	if (!msm_mpdec_tuners_ins.enabled)
 		return MSM_MPDEC_DISABLED;
 
 	current_time = ktime_to_ms(ktime_get());
@@ -331,7 +333,7 @@ static void msm_mpdec_work_thread(struct work_struct *work) {
 	mutex_unlock(&mpdec_msm_cpu_lock);
 
 out:
-	if (state != MSM_MPDEC_DISABLED)
+	if (msm_mpdec_tuners_ins.enabled)
 		queue_delayed_work(msm_mpdec_workq, &msm_mpdec_work,
 					msecs_to_jiffies(msm_mpdec_tuners_ins.delay));
 	return;
@@ -627,7 +629,9 @@ static DECLARE_WORK(msm_mpdec_resume_work, msm_mpdec_resume);
 #ifndef CONFIG_HAS_EARLYSUSPEND
 static int msm_mpdec_lcd_notifier_callback(struct notifier_block *this,
 				unsigned long event, void *data) {
-	pr_debug("%s: event = %lu\n", __func__, event);
+
+	if (!msm_mpdec_tuners_ins.enabled)
+		return MSM_MPDEC_DISABLED;
 
 	switch (event) {
 	case LCD_EVENT_OFF_START:
@@ -686,6 +690,7 @@ show_one(pause, pause);
 show_one(scroff_single_core, scroff_single_core);
 show_one(min_cpus, min_cpus);
 show_one(max_cpus, max_cpus);
+show_one(enabled, enabled);
 #ifdef CONFIG_MSM_MPDEC_INPUTBOOST_CPUMIN
 show_one(boost_enabled, boost_enabled);
 show_one(boost_time, boost_time);
@@ -769,25 +774,6 @@ static ssize_t show_idle_freq (struct kobject *kobj, struct attribute *attr,
 				char *buf)
 {
 	return sprintf(buf, "%lu\n", msm_mpdec_tuners_ins.idle_freq);
-}
-
-static ssize_t show_enabled(struct kobject *a, struct attribute *b,
-				char *buf)
-{
-	unsigned int enabled;
-	switch (state) {
-	case MSM_MPDEC_DISABLED:
-		enabled = 0;
-		break;
-	case MSM_MPDEC_IDLE:
-	case MSM_MPDEC_DOWN:
-	case MSM_MPDEC_UP:
-		enabled = 1;
-		break;
-	default:
-		enabled = 333;
-	}
-	return sprintf(buf, "%u\n", enabled);
 }
 
 static ssize_t store_startdelay(struct kobject *a, struct attribute *b,
@@ -916,45 +902,32 @@ static ssize_t store_min_cpus(struct kobject *a, struct attribute *b,
 static ssize_t store_enabled(struct kobject *a, struct attribute *b,
 				const char *buf, size_t count)
 {
-	unsigned int cpu, input, enabled;
-	int ret;
+	unsigned int input;
+	int ret, cpu;
 	ret = sscanf(buf, "%u", &input);
 	if (ret != 1)
 		return -EINVAL;
 
-	switch (state) {
-	case MSM_MPDEC_DISABLED:
-		enabled = 0;
-		break;
-	case MSM_MPDEC_IDLE:
-	case MSM_MPDEC_DOWN:
-	case MSM_MPDEC_UP:
-		enabled = 1;
-		break;
-	default:
-		enabled = 333;
-	}
+	if (input > 1)
+		input = 1;
 
-	if (buf[0] == enabled)
-		return -EINVAL;
+	if (input == msm_mpdec_tuners_ins.enabled)
+		return count;
 
-	switch (buf[0]) {
-	case '0':
+	msm_mpdec_tuners_ins.enabled = input;
+
+	if (!msm_mpdec_tuners_ins.enabled) {
 		state = MSM_MPDEC_DISABLED;
-		pr_info(MPDEC_TAG"nap time... Hot plugging offline CPUs...\n");
+		pr_info(MPDEC_TAG"Hotplug Driver Disabled\n");
 		for (cpu = 1; cpu < CONFIG_NR_CPUS; cpu++)
 			if (!cpu_online(cpu))
 				mpdec_cpu_up(cpu);
-		break;
-	case '1':
+	} else {
 		state = MSM_MPDEC_IDLE;
 		was_paused = true;
 		queue_delayed_work(msm_mpdec_workq, &msm_mpdec_work,
 					msecs_to_jiffies(msm_mpdec_tuners_ins.delay));
-		pr_info(MPDEC_TAG"firing up mpdecision...\n");
-		break;
-	default:
-		ret = -EINVAL;
+		pr_info(MPDEC_TAG"Hotplug Driver Enabled\n");
 	}
 	return count;
 }
@@ -1208,7 +1181,7 @@ static int __init msm_mpdec_init(void) {
 	rc = input_register_handler(&mpdec_input_handler);
 #endif
 
-	if (state != MSM_MPDEC_DISABLED)
+	if (msm_mpdec_tuners_ins.enabled)
 		queue_delayed_work(msm_mpdec_workq, &msm_mpdec_work,
 					msecs_to_jiffies(msm_mpdec_tuners_ins.startdelay));
 
